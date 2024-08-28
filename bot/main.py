@@ -73,7 +73,7 @@ def parse_handler(message: Message):
         userAgent = UserAgent()
         options.add_argument(f'user-agent={userAgent.random}')
 
-        plugin = f'bot/proxies/proxy_plugin_{randint(1, 5)}.zip'
+        plugin = f'proxies/proxy_plugin_{randint(1, 5)}.zip'
         options.add_extension(plugin)
 
         driver = webdriver.Chrome(options=options)
