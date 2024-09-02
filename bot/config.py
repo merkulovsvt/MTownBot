@@ -57,7 +57,7 @@ chrome.webRequest.onAuthRequired.addListener(
             {urls: ["<all_urls>"]},
             ['blocking']
 );
-""" % (os.getenv('PROXY_HOST'), str(int(os.getenv('PROXY_PORT')) + id), os.getenv('PROXY_USER'),
+""" % (os.getenv('PROXY_HOST'), os.getenv('PROXY_PORT'), os.getenv('PROXY_USER'),
        os.getenv('PROXY_PASS'))
 
     plugin_file = f'proxies/proxy_plugin_{id}.zip'
@@ -67,5 +67,5 @@ chrome.webRequest.onAuthRequired.addListener(
         zp.writestr('background.js', background_js)
 
 
-for i in range(1, 6):
+for i in range(1, 2):
     make_plugin_zip(i)

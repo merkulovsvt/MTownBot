@@ -1,4 +1,4 @@
-import logging
+import datetime
 import os
 import re
 import time
@@ -8,20 +8,14 @@ import validators
 from dotenv import load_dotenv
 from fake_useragent import UserAgent
 from selenium import webdriver
-from selenium.webdriver import DesiredCapabilities
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.options import PageLoadStrategy
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 from telebot import TeleBot
 from telebot.types import Message
+
+from bot.scripts import get_final_price, get_by_class_name, get_by_css
 
 load_dotenv()
 
 bot = TeleBot(os.getenv('BOT_TOKEN'))
-logging.basicConfig(level=logging.INFO)
 
 
 # service = Service(executable_path="home/tgbot/chromedriver") linux
@@ -55,14 +49,6 @@ def parse_handler(message: Message):
         if not id:
             raise Exception
 
-        # if "suchen" in message.text:
-        #     data = re.findall(r'[?&]id=\d+&', message.text)[0][4:]
-        #     id = data[:-1]
-        #
-        # else:
-        #     data = re.findall(r'/\d+\.html', message.text)[0][1:]
-        #     id = data[:-5]
-
         url = f'https://suchen.mobile.de/fahrzeuge/details.html?id={id}'
 
     except Exception as e:
@@ -73,10 +59,8 @@ def parse_handler(message: Message):
     options = webdriver.ChromeOptions()
     options.add_argument('--disable-blink-features=AutomationControlled')
     options.add_argument('--blink-settings=imagesEnabled=False')
-
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--ignore-certificate-errors')
-
     options.page_load_strategy = 'none'
     options.add_argument('--headless')
 
@@ -84,7 +68,6 @@ def parse_handler(message: Message):
         "profile.managed_default_content_settings.fonts": 2,
         "profile.managed_default_content_settings.popups": 2,
         "profile.managed_default_content_settings.plugins": 2,
-        # 'profile.managed_default_content_settings.javascript': 2
     }
     options.add_experimental_option("prefs", prefs)
 
@@ -95,54 +78,44 @@ def parse_handler(message: Message):
         userAgent = UserAgent()
         options.add_argument(f'user-agent={userAgent.random}')
 
-        plugin = f'proxies/proxy_plugin_{randint(1, 5)}.zip'
+        plugin = f'proxies/proxy_plugin_{randint(1, 1)}.zip'
         options.add_extension(plugin)
 
         # driver = webdriver.Chrome(service=service, options=options) linux
         driver = webdriver.Chrome(options=options)
 
         try:
-            print('GET')
+            print(f'GET {datetime.datetime.now().strftime("%d.%m %H:%M:%S")}')
 
             bot.send_chat_action(message.chat.id, 'typing')
 
             driver.get(url=url)
-            # time.sleep(1)
+            time.sleep(1)
 
             bot.send_chat_action(message.chat.id, 'typing')
 
-            car_price = WebDriverWait(driver=driver, timeout=5).until(
-                expected_conditions.presence_of_element_located(
-                    (By.CLASS_NAME, 'dNpqi'))
-            )
-
-            parts = car_price.text[:-2].split('.')
-            result = "{:.2f}".format(round(int(parts[0] + parts[1]) * 1.58, 2))
+            car_price = get_final_price(car_price=get_by_class_name(driver=driver, class_name='dNpqi', timeout=5).text)
 
             bot.send_chat_action(message.chat.id, 'typing')
 
             if "suchen" in driver.current_url:
-                car_name = WebDriverWait(driver=driver, timeout=5).until(
-                    expected_conditions.presence_of_element_located(
-                        (By.CSS_SELECTOR, "h2.dNpqi"))
-                )
+                car_name = get_by_css(driver=driver, name="h2.dNpqi", timeout=5)
 
             else:
-                car_name = WebDriverWait(driver=driver, timeout=5).until(
-                    expected_conditions.presence_of_element_located(
-                        (By.CSS_SELECTOR, 'h1.fpviJ.U9mat[data-testid="vip-ad-title"]'))
-                )
+                car_name = get_by_css(driver=driver, name='h1.fpviJ.U9mat[data-testid="vip-ad-title"]', timeout=5)
+
+            print(f"{car_name.text} - €{car_price}\n")
 
             bot.send_chat_action(message.chat.id, 'typing')
 
-            bot.reply_to(message, f"{car_name.text} - €{result}")
+            bot.reply_to(message, f"{car_name.text} - €{car_price}")
 
             driver.quit()
             break
 
         except Exception as e:
             bot.reply_to(message, "Что-то не так с этой ссылкой или сервис блокирует парсер.\n"
-                                  "Проверьте ссылку и повторите запрос через некоторое время!")
+                                  "Перепроверьте ссылку и повторите запрос через некоторое время!")
             print(e)
             break
 
