@@ -1,17 +1,18 @@
 import datetime
 import os
 import re
-import time
+from math import ceil
 from random import randint
 
 import validators
 from dotenv import load_dotenv
 from fake_useragent import UserAgent
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from telebot import TeleBot
 from telebot.types import Message
 
-from bot.scripts import get_final_price, get_by_class_name, get_by_css
+from bot.config import start_text
 
 load_dotenv()
 
@@ -24,9 +25,8 @@ bot = TeleBot(os.getenv('BOT_TOKEN'))
 # Хендлер на команду /start
 @bot.message_handler(commands=['start'])
 def start_handler(message: Message):
-    bot.send_message(message.chat.id,
-                     "Это бот-парсер для MTown!\n"
-                     "Пришлите мне ссылку на машину с mobile.de и я выведу нужные данные!")
+    bot.send_message(message.chat.id, text=start_text)
+    bot.send_message(message.chat.id, text="Пришлите мне ссылку на машину с mobile.de и я выведу расчетную стоимость!")
 
 
 # Хендлер для парсинга
@@ -68,6 +68,8 @@ def parse_handler(message: Message):
         "profile.managed_default_content_settings.fonts": 2,
         "profile.managed_default_content_settings.popups": 2,
         "profile.managed_default_content_settings.plugins": 2,
+        # "profile.managed_default_content_settings.stylesheet": 2,
+        # "profile.managed_default_content_settings.javascript": 2,
     }
     options.add_experimental_option("prefs", prefs)
 
@@ -79,7 +81,7 @@ def parse_handler(message: Message):
         options.add_argument(f'user-agent={userAgent.random}')
 
         plugin = f'proxies/proxy_plugin_{randint(1, 1)}.zip'
-        options.add_extension(plugin)
+        # options.add_extension(plugin)
 
         # driver = webdriver.Chrome(service=service, options=options) linux
         driver = webdriver.Chrome(options=options)
@@ -90,25 +92,28 @@ def parse_handler(message: Message):
             bot.send_chat_action(message.chat.id, 'typing')
 
             driver.get(url=url)
-            time.sleep(1)
+            driver.implicitly_wait(8)
 
             bot.send_chat_action(message.chat.id, 'typing')
 
-            car_price = get_final_price(car_price=get_by_class_name(driver=driver, class_name='dNpqi', timeout=5).text)
+            car_price = "{:,}".format(ceil(int(
+                driver.find_element(by=By.CSS_SELECTOR, value='span.Q7YSy.ZD2EM').text.
+                split(" ")[0].replace(".", "")) * 1.58)).replace(',', '.')
 
             bot.send_chat_action(message.chat.id, 'typing')
 
             if "suchen" in driver.current_url:
-                car_name = get_by_css(driver=driver, name="h2.dNpqi", timeout=5)
-
+                value = "h2.dNpqi"
             else:
-                car_name = get_by_css(driver=driver, name='h1.fpviJ.U9mat[data-testid="vip-ad-title"]', timeout=5)
+                value = 'h1.fpviJ.U9mat[data-testid="vip-ad-title"]'
 
-            print(f"{car_name.text} - €{car_price}\n")
+            car_name = driver.find_element(by=By.CSS_SELECTOR, value=value).text
+
+            print(f"{car_name} - €{car_price}\n")
 
             bot.send_chat_action(message.chat.id, 'typing')
 
-            bot.reply_to(message, f"{car_name.text} - €{car_price}")
+            bot.reply_to(message, f"{car_name} - €{car_price}")
 
             driver.quit()
             break

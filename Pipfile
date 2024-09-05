@@ -4,16 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aiogram = "*"
 selenium = "*"
 webdriver-manager = "*"
-pyyaml = "*"
 ua-parser = "*"
 user-agents = "*"
 fake-useragent = "*"
 python-dotenv = "*"
 pytelegrambotapi = "*"
 validators = "*"
+selenium-wire = "*"
 
 [dev-packages]
 
