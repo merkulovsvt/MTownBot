@@ -1,4 +1,3 @@
-import os
 import zipfile
 
 from dotenv import load_dotenv
@@ -29,7 +28,14 @@ start_text = '''
 Осуществить заказ и узнать об автомобиле подробнее : @i1kuch'''
 
 
-def make_plugin_zip(id: int):
+def make_plugin_zip(proxy: str, id: int):
+    host = proxy.split(':')[0]
+    port = proxy.split(':')[1]
+    user = proxy.split(':')[2]
+    password = proxy.split(':')[3]
+
+    print(host, port, user, password)
+
     manifest_json = """
 {
     "version": "1.0.0",
@@ -80,8 +86,7 @@ chrome.webRequest.onAuthRequired.addListener(
             {urls: ["<all_urls>"]},
             ['blocking']
 );
-""" % (os.getenv('PROXY_HOST'), os.getenv('PROXY_PORT'), os.getenv('PROXY_USER'),
-       os.getenv('PROXY_PASS'))
+""" % (host, port, user, password)
 
     plugin_file = f'proxies/proxy_plugin_{id}.zip'
 
@@ -90,5 +95,12 @@ chrome.webRequest.onAuthRequired.addListener(
         zp.writestr('background.js', background_js)
 
 
-for i in range(1, 2):
-    make_plugin_zip(i)
+proxies = [
+    '163.198.109.59:8000:s6phCL:KYPXky',
+    '185.76.243.129:8000:PRBZ0f:DyUU5d',
+    '168.81.64.20:8000:R981zD:y7PuHE',
+    '45.137.62.18:8000:bV94Mh:KSsukN'
+]
+
+for i in range(len(proxies)):
+    make_plugin_zip(proxy=proxies[i], id=i + 1)

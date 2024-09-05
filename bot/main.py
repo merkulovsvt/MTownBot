@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 from telebot import TeleBot
 from telebot.types import Message
 
-from bot.config import start_text
+from bot.config import start_text, proxies
 
 load_dotenv()
 
@@ -62,7 +62,7 @@ def parse_handler(message: Message):
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--ignore-certificate-errors')
     options.page_load_strategy = 'none'
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
 
     prefs = {
         "profile.managed_default_content_settings.fonts": 2,
@@ -80,8 +80,8 @@ def parse_handler(message: Message):
         userAgent = UserAgent()
         options.add_argument(f'user-agent={userAgent.random}')
 
-        plugin = f'proxies/proxy_plugin_{randint(1, 1)}.zip'
-        # options.add_extension(plugin)
+        plugin = f'proxies/proxy_plugin_{randint(1, len(proxies))}.zip'
+        options.add_extension(plugin)
 
         # driver = webdriver.Chrome(service=service, options=options) linux
         driver = webdriver.Chrome(options=options)
@@ -92,13 +92,18 @@ def parse_handler(message: Message):
             bot.send_chat_action(message.chat.id, 'typing')
 
             driver.get(url=url)
-            driver.implicitly_wait(8)
+            driver.implicitly_wait(5)
 
             bot.send_chat_action(message.chat.id, 'typing')
 
-            car_price = "{:,}".format(ceil(int(
-                driver.find_element(by=By.CSS_SELECTOR, value='span.Q7YSy.ZD2EM').text.
-                split(" ")[0].replace(".", "")) * 1.58)).replace(',', '.')
+            try:
+                car_price = driver.find_element(by=By.CSS_SELECTOR, value='span.Q7YSy.ZD2EM').text.split(" ")[0]
+            except:
+                print('No Netto price')
+                car_price = driver.find_element(by=By.CLASS_NAME, value='zgAoK.dNpqi').text.split(" ")[0]
+
+            car_price = ("{:,}".format(ceil(int(car_price.replace(".", "")) * 1.58)).
+                         replace(',', '.'))
 
             bot.send_chat_action(message.chat.id, 'typing')
 
