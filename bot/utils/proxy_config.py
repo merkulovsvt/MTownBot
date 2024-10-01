@@ -88,7 +88,7 @@ chrome.webRequest.onAuthRequired.addListener(
 );
 """ % (host, port, user, password)
 
-    plugin_file = f'proxies/proxy_plugin_{id}.zip'
+    plugin_file = f'bot/utils/proxies/proxy_plugin_{id}.zip'
 
     with zipfile.ZipFile(plugin_file, 'w') as zp:
         zp.writestr('manifest.json', manifest_json)
@@ -99,7 +99,6 @@ proxies = [
     '163.198.109.59:8000:s6phCL:KYPXky',
     '185.76.243.129:8000:PRBZ0f:DyUU5d',
     '168.81.64.20:8000:R981zD:y7PuHE',
-    '45.137.62.18:8000:bV94Mh:KSsukN'
 ]
 
 for i in range(len(proxies)):

@@ -6,13 +6,10 @@ name = "pypi"
 [packages]
 selenium = "*"
 webdriver-manager = "*"
-ua-parser = "*"
-user-agents = "*"
 fake-useragent = "*"
 python-dotenv = "*"
 pytelegrambotapi = "*"
 validators = "*"
-selenium-wire = "*"
 
 [dev-packages]
 

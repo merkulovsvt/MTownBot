@@ -1,4 +1,4 @@
 .env
 .idea
-/bot/proxies
+/bot/utils/proxies
 Pipfile.lock
