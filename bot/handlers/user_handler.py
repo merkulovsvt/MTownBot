@@ -13,9 +13,6 @@ async def command_start(message: types.Message):
     await message.answer(text=start_text,
                          disable_web_page_preview=True)
 
-    # bot.send_message(chat_id=message.chat.id,
-    #                  text="Пришлите мне ссылку на машину с mobile.de и я выведу расчетную стоимость!")
-
 
 # Хендлер для остальных сообщений
 @router.message(NotURL(), F.text)

@@ -1,8 +1,8 @@
 import os
 from datetime import datetime
-from pathlib import Path
 
 from aiogram import Bot
+
 
 async def start_bot(bot: Bot):
     await bot.send_message(chat_id=os.getenv("MODERATOR_CHAT_ID"),

@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-
 def make_plugin_zip(proxy: str, id: int):
     host = proxy.split(':')[0]
     port = proxy.split(':')[1]
