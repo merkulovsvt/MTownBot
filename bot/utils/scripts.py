@@ -3,7 +3,7 @@ from math import ceil
 from typing import Union
 
 
-def get_error_or_parse_url(message_text: str) -> Union[bool, str]:
+def get_parse_url(message_text: str) -> str:
     id_strings = re.findall(pattern=r'[?&]id=\d+&',
                             string=message_text)
 
@@ -20,7 +20,7 @@ def get_error_or_parse_url(message_text: str) -> Union[bool, str]:
     if id:
         return f'https://suchen.mobile.de/fahrzeuge/details.html?id={id}'
     else:
-        raise False
+        return message_text
 
 
 def get_final_price(car_price: str):

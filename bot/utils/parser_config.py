@@ -3,7 +3,7 @@ from selenium import webdriver
 
 def get_parser_options():
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless=new')
+    # options.add_argument('--headless=new')
     options.add_argument('--disable-gpu')
 
     options.add_argument('--disable-blink-features=AutomationControlled')
