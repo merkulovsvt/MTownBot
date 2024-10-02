@@ -74,9 +74,9 @@ chrome.webRequest.onAuthRequired.addListener(
 
 
 proxies = [
-    # '163.198.109.59:8000:s6phCL:KYPXky',
-    # '185.76.243.129:8000:PRBZ0f:DyUU5d',
-    # '168.81.64.20:8000:R981zD:y7PuHE',
+    '163.198.109.59:8000:s6phCL:KYPXky',
+    '185.76.243.129:8000:PRBZ0f:DyUU5d',
+    '168.81.64.20:8000:R981zD:y7PuHE',
     '85.195.81.168:10909:khdM03:CXU7jK'
 ]
 

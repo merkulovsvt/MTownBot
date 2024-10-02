@@ -4,13 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-selenium = "==4.25.0"
+aiogram = "==3.1.1"
+pytelegrambotapi = "==4.23.0"
+python-dotenv = "==1.0.1"
+validators = "==0.34.0"
 webdriver-manager = "==4.0.2"
 fake-useragent = "==1.5.1"
-python-dotenv = "==1.0.1"
-pytelegrambotapi = "==4.23.0"
-validators = "==0.34.0"
-aiogram = "==3.1.1"
+selenium = "*"
 
 [dev-packages]
 
