@@ -1,21 +1,22 @@
 import asyncio
 import datetime
 
-from aiogram import Router, types
+from aiogram import Router, types, F
 from aiogram.enums import ChatAction, ParseMode
 from selenium import webdriver
 
-from bot.keyboards.parser_keyboards import car_book_request
-from bot.utils.filters import URL
-from bot.utils.parser_config import get_parser_options
-from bot.utils.scripts import get_final_price, get_parse_url, get_data
+from bot.keyboards.lead_keyboards import inline_car_details
+from bot.utils.bot.filters import URL
+from bot.utils.database.requests import create_lead, update_lead
+from bot.utils.parser.scripts import get_final_price, get_parse_url, get_data
+from bot.utils.parser.scripts import get_parser_options
 from main import logger
 
 router = Router()
 
 
 # Хендлер для парсинга
-@router.message(URL())
+@router.message(F.text, URL())
 async def web_parsing_handler(message: types.Message):
     await message.bot.send_chat_action(chat_id=message.chat.id, action=ChatAction.TYPING)
     time = datetime.datetime.now()
@@ -27,14 +28,31 @@ async def web_parsing_handler(message: types.Message):
             car_name = data.get("car_name")
             car_price = data.get("car_price")
             price_type = data.get("price_type")
+            url = data.get("url")
         else:
             raise Exception('Parse error')
 
-        text, reply_markup = car_book_request(car_name=car_name,
-                                              car_price=get_final_price(car_price=car_price))
-        await message.answer(text=text,
-                             reply_markup=reply_markup,
-                             parse_mode=ParseMode.MARKDOWN)
+        bel_price, rus_price = get_final_price(car_price=car_price)
+
+        lead_id = await create_lead(chat_id=message.chat.id,
+                                    username=message.chat.username,
+                                    car_name=car_name,
+                                    url=url)
+
+        text, reply_markup = inline_car_details(car_name=car_name,
+                                                car_price=car_price,
+                                                bel_price=bel_price,
+                                                rus_price=rus_price,
+                                                price_type=price_type,
+                                                lead_id=lead_id)
+
+        lead_message = await message.answer(text=text,
+                                            reply_markup=reply_markup,
+                                            parse_mode=ParseMode.MARKDOWN)
+
+        await update_lead(lead_id=lead_id,
+                          message_id=lead_message.message_id)
+
         print(datetime.datetime.now() - time)
     except Exception as Error:
         await message.reply(text="Ошибка! Перепроверьте ссылку!")

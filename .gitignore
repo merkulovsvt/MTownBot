@@ -1,4 +1,6 @@
 .env
 .idea
 /bot/utils/proxies
+/tokens
+DataBase.db
 Pipfile.lock

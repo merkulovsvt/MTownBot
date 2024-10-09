@@ -1,7 +1,10 @@
 import os
 from datetime import datetime
+from pathlib import Path
 
 from aiogram import Bot
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
 
 async def start_bot(bot: Bot):
