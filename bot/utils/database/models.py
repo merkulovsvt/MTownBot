@@ -38,7 +38,6 @@ class Lead(Base):
     __tablename__ = 'leads'
 
     id = Column(Integer, primary_key=True)
-    username = Column(String)
     user_chat_id = Column(BIGINT, ForeignKey('users.chat_id'), nullable=False)
 
     message_id = Column(BIGINT)

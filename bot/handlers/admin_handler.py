@@ -12,4 +12,3 @@ router = Router()
 async def edit_percent(message: types.Message):
     await message.answer(text=start_text,
                          disable_web_page_preview=True)
-    message.chat.full_name

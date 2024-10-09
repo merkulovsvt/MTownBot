@@ -46,9 +46,9 @@ async def get_user_data(chat_id: int, column_name: str):
 
 
 # Lead requests
-async def create_lead(chat_id: int, username: str, car_name: str, url: str):
+async def create_lead(chat_id: int, car_name: str, url: str):
     async with async_session() as session:
-        new_lead = Lead(user_chat_id=chat_id, username=username, car_name=car_name, url=url)
+        new_lead = Lead(user_chat_id=chat_id, car_name=car_name, url=url)
         session.add(new_lead)
         await session.flush()
         new_lead_id = new_lead.id

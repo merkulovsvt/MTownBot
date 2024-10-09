@@ -35,7 +35,6 @@ async def web_parsing_handler(message: types.Message):
         bel_price, rus_price = get_final_price(car_price=car_price)
 
         lead_id = await create_lead(chat_id=message.chat.id,
-                                    username=message.chat.username,
                                     car_name=car_name,
                                     url=url)
 
