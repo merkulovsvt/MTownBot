@@ -4,16 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aiogram = "==3.1.1"
+aiogram = "==3.13.1"
 pytelegrambotapi = "==4.23.0"
 python-dotenv = "==1.0.1"
 validators = "==0.34.0"
 webdriver-manager = "==4.0.2"
-fake-useragent = "==1.5.1"
 selenium = "==4.25.0"
 amocrm-api = "==2.6.1"
 aiosqlite = "==0.20.0"
 sqlalchemy = "==2.0.35"
+fake-useragent = "==1.5.1"
 
 [dev-packages]
 

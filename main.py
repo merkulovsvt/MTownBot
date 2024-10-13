@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher
 from amocrm.v2 import tokens
 from dotenv import load_dotenv
 
-from bot.handlers import user_handler, parser_handler, admin_handler, lead_handler
+from bot.handlers import user_handler, parser_handler, lead_handler
 from bot.middlewares.user_activity import UserActivity
 from bot.utils.bot.scripts import stop_bot, start_bot
 from bot.utils.database.models import start_db
@@ -26,7 +26,7 @@ async def main() -> None:
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
 
-    dp.include_routers(admin_handler.router, user_handler.router, parser_handler.router, lead_handler.router)
+    dp.include_routers(user_handler.router, parser_handler.router, lead_handler.router)
 
     dp.update.outer_middleware(UserActivity())
 
@@ -39,8 +39,6 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    # tokens.default_token_manager.init(code="..very long code...", skip_error=True)
-
     tokens.default_token_manager(
         client_id=os.getenv('CLIENT_ID'),
         client_secret=os.getenv('CLIENT_SECRET'),
@@ -49,4 +47,5 @@ if __name__ == "__main__":
         storage=tokens.FileTokensStorage('tokens'),
     )
 
+    tokens.default_token_manager.init(code=os.getenv('SECRET'), skip_error=False)
     asyncio.run(main())

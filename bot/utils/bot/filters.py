@@ -12,7 +12,7 @@ load_dotenv()
 
 class IsAdmin(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        return str(message.chat.id) in os.environ.get('ADMIN_CHAT_IDS')
+        return str(message.chat.id) == os.environ.get('ADMIN_CHAT_ID')
 
 
 class MLeadInProgress(BaseFilter):

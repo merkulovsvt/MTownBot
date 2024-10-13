@@ -14,15 +14,13 @@ from main import logger
 
 
 def get_parser_options():
-    userAgent = UserAgent()
-
     options = webdriver.ChromeOptions()
     options.add_argument('--headless=new')
     options.add_argument('--disable-gpu')
 
     options.add_argument('--disable-blink-features=AutomationControlled')
     options.add_argument('--blink-settings=imagesEnabled=False')
-    # options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-dev-shm-usage')
     # options.add_argument('--ignore-certificate-errors')
     # options.add_argument('--disable-popup-blocking')
     # options.add_argument('--start-maximized')
@@ -34,7 +32,8 @@ def get_parser_options():
 
     options.page_load_strategy = 'none'
 
-    options.add_argument(f'user-agent={userAgent.random}')
+    options.add_argument(f'user-agent={UserAgent(os=["windows", "macos", "linux"], platforms=["pc", "tablet"]).random}')
+
     options.add_extension(f'bot/utils/proxies/proxy_plugin_{randint(1, len(proxies))}.zip')
 
     prefs = {
