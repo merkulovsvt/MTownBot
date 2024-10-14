@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 
+import uvicorn
 from aiogram import Bot, Dispatcher
 from amocrm.v2 import tokens
 from dotenv import load_dotenv
@@ -9,6 +10,7 @@ from dotenv import load_dotenv
 from bot.handlers import user_handler, parser_handler, lead_handler
 from bot.middlewares.user_activity import UserActivity
 from bot.utils.bot.scripts import stop_bot, start_bot
+from bot.utils.database.admin import app
 from bot.utils.database.models import start_db
 
 load_dotenv()
@@ -39,6 +41,8 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
+    # uvicorn.run(app, host="127.0.0.1", port=8000)
+
     tokens.default_token_manager(
         client_id=os.getenv('CLIENT_ID'),
         client_secret=os.getenv('CLIENT_SECRET'),
@@ -47,5 +51,5 @@ if __name__ == "__main__":
         storage=tokens.FileTokensStorage('tokens'),
     )
 
-    tokens.default_token_manager.init(code=os.getenv('SECRET'), skip_error=False)
+    # tokens.default_token_manager.init(code=os.getenv('SECRET'), skip_error=False)
     asyncio.run(main())

@@ -28,7 +28,7 @@ start_text = '''
 parser_text = '''
 *{car_name}* стоит *€{car_price}* {price_type_text}
 
-Таможня:
+Стоимость автомобиля с учетом таможни:
 На Белоруссию - *€{bel_price}*
 На Россию - *€{rus_price}*
 

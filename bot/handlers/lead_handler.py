@@ -53,7 +53,7 @@ async def lead_upload_begin_handler(callback: types.CallbackQuery, callback_data
 
         await callback.message.answer(text='Поздравляю, заявка отправлена! В ближайшее время с вами свяжутся!',
                                       reply_markup=ReplyKeyboardRemove())
-        await callback.message.answer(text='Можете смело отправлять мне ещё одну ссылку!',
+        await callback.message.answer(text='Если нужно будет посчитать другой автомобиль, отправляйте еще одну ссылку в чат.',
                                       disable_web_page_preview=True)
 
         await update_user(chat_id=callback.message.chat.id, lead_id_in_progress=None)
@@ -95,7 +95,7 @@ async def lead_upload_phone_handler(message: types.Message):
 
         await message.answer(text='Поздравляю, заявка отправлена! В ближайшее время с вами свяжутся!',
                              reply_markup=ReplyKeyboardRemove())
-        await message.answer(text='Можете смело отправлять мне ещё одну ссылку!',
+        await message.answer(text='Если нужно будет посчитать другой автомобиль, отправляйте еще одну ссылку в чат.',
                              disable_web_page_preview=True)
 
         await update_user(chat_id=message.chat.id, lead_id_in_progress=None)
